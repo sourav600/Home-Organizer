@@ -5,20 +5,13 @@ import java.util.Objects;
 
 /**
  * Ties a User to a Household with a specific Role.
- *
  * The SAME user can hold a different role in different households:
- *   (alice, home-A, HOUSEHOLDER)
- *   (alice, home-B, MEMBER)
- *
+ * (alice, home-A, HOUSEHOLDER)
+ * (alice, home-B, MEMBER)
  * Uniqueness: (userId, householdId) — one role per user per household.
  */
-public final class HouseholdMember {
-
-    private final HouseholdMemberId id;
-    private final UserId userId;
-    private final HouseholdId householdId;
-    private final RoleId roleId;
-    private final Instant joinedAt;
+public record HouseholdMember(HouseholdMemberId id, UserId userId, HouseholdId householdId, RoleId roleId,
+                              Instant joinedAt) {
 
     public HouseholdMember(HouseholdMemberId id,
                            UserId userId,
@@ -36,12 +29,6 @@ public final class HouseholdMember {
         return new HouseholdMember(
                 HouseholdMemberId.newId(), userId, householdId, roleId, Instant.now());
     }
-
-    public HouseholdMemberId id() { return id; }
-    public UserId userId() { return userId; }
-    public HouseholdId householdId() { return householdId; }
-    public RoleId roleId() { return roleId; }
-    public Instant joinedAt() { return joinedAt; }
 
     public HouseholdMember changeRole(RoleId newRoleId) {
         return new HouseholdMember(id, userId, householdId, newRoleId, joinedAt);

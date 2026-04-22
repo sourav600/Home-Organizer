@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Registers a new user and creates their first household. The registering user
  * joins that household as HOUSEHOLDER via a HouseholdMember link.
- *
  * Later, "invite" / "accept invite" use cases will create additional HouseholdMember
  * rows for the same user — possibly with a different role in a different household.
  */
