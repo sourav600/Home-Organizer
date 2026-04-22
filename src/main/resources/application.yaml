@@ -3,10 +3,10 @@ spring:
     name: Home Organizer
 
   datasource:
-    url: jdbc:h2:mem:homeorganizer;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:postgresql://localhost:5432/homeorganizer
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: root
 
   jpa:
     hibernate:
@@ -14,6 +14,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
 
   h2:
