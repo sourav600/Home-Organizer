@@ -1,6 +1,7 @@
 package com.misourav.homeorganizer.application.service;
 
 import com.misourav.homeorganizer.application.port.in.RegisterUserUseCase;
+import com.misourav.homeorganizer.application.port.out.EmailSender;
 import com.misourav.homeorganizer.application.port.out.HouseholdMemberRepository;
 import com.misourav.homeorganizer.application.port.out.HouseholdRepository;
 import com.misourav.homeorganizer.application.port.out.PasswordHasher;
@@ -22,9 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Registers a new user and creates their first household. The registering user
- * joins that household as HOUSEHOLDER via a HouseholdMember link.
- * Later, "invite" / "accept invite" use cases will create additional HouseholdMember
- * rows for the same user — possibly with a different role in a different household.
+ * joins that household as HOUSEHOLDER via a HouseholdMember link. After the user
+ * row is committed, an OTP is generated and emailed so the user can verify their
+ * address before logging in.
  */
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,8 @@ public class RegisterUserService implements RegisterUserUseCase {
     private final HouseholdRepository householdRepository;
     private final HouseholdMemberRepository memberRepository;
     private final PasswordHasher passwordHasher;
+    private final OtpService otpService;
+    private final EmailSender emailSender;
 
     @Override
     @Transactional
@@ -58,6 +61,9 @@ public class RegisterUserService implements RegisterUserUseCase {
         HouseholdMember membership = HouseholdMember.join(
                 savedUser.id(), savedHousehold.id(), householderRole.id());
         memberRepository.save(membership);
+
+        String otpCode = otpService.generateAndSaveOtp(email);
+        emailSender.sendOtpEmail(email, otpCode, savedUser.name());
 
         return savedUser.id();
     }

@@ -17,10 +17,17 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
 
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+  mail:
+    host: ${SMTP_HOST:smtp.gmail.com}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 app:
   security:
@@ -29,3 +36,8 @@ app:
       secret: ${APP_SECURITY_JWT_SECRET:Y2hhbmdlLW1lLXRoaXMtaXMtYS1kZXYtb25seS1qd3Qtc2VjcmV0LTMyYnl0ZXM=}
       issuer: home-organizer
       access-token-ttl: PT30M
+  otp:
+    length: 6
+    expiry-minutes: 5
+  mail:
+    from: ${SMTP_FROM:no-reply@homeorganizer.local}

@@ -46,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-
+        System.out.println(request + "********");
         try {
             TokenProvider.ParsedToken parsed = tokenProvider.parse(token);
 

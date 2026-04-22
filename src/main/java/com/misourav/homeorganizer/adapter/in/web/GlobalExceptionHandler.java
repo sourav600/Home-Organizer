@@ -1,7 +1,10 @@
 package com.misourav.homeorganizer.adapter.in.web;
 
 import com.misourav.homeorganizer.domain.exception.EmailAlreadyUsedException;
+import com.misourav.homeorganizer.domain.exception.EmailAlreadyVerifiedException;
+import com.misourav.homeorganizer.domain.exception.EmailNotVerifiedException;
 import com.misourav.homeorganizer.domain.exception.InvalidCredentialsException;
+import com.misourav.homeorganizer.domain.exception.InvalidOtpException;
 import com.misourav.homeorganizer.domain.exception.NotAMemberException;
 import com.misourav.homeorganizer.domain.exception.RoleNotFoundException;
 import com.misourav.homeorganizer.domain.exception.UserNotFoundException;
@@ -50,6 +53,24 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> onNotMember(NotAMemberException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(error(HttpStatus.FORBIDDEN, ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(EmailNotVerifiedException.class)
+    public ResponseEntity<Map<String, Object>> onEmailNotVerified(EmailNotVerifiedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(error(HttpStatus.FORBIDDEN, ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(EmailAlreadyVerifiedException.class)
+    public ResponseEntity<Map<String, Object>> onAlreadyVerified(EmailAlreadyVerifiedException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(error(HttpStatus.CONFLICT, ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(InvalidOtpException.class)
+    public ResponseEntity<Map<String, Object>> onInvalidOtp(InvalidOtpException ex) {
+        return ResponseEntity.badRequest()
+                .body(error(HttpStatus.BAD_REQUEST, ex.getMessage(), null));
     }
 
     @ExceptionHandler(AccessDeniedException.class)

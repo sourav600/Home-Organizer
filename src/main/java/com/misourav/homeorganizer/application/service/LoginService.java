@@ -7,6 +7,7 @@ import com.misourav.homeorganizer.application.port.out.PasswordHasher;
 import com.misourav.homeorganizer.application.port.out.RoleRepository;
 import com.misourav.homeorganizer.application.port.out.TokenProvider;
 import com.misourav.homeorganizer.application.port.out.UserRepository;
+import com.misourav.homeorganizer.domain.exception.EmailNotVerifiedException;
 import com.misourav.homeorganizer.domain.exception.InvalidCredentialsException;
 import com.misourav.homeorganizer.domain.exception.NotAMemberException;
 import com.misourav.homeorganizer.domain.model.Email;
@@ -49,6 +50,10 @@ public class LoginService implements LoginUseCase {
 
         if (!user.isActive() || !passwordHasher.matches(cmd.rawPassword(), user.passwordHash())) {
             throw new InvalidCredentialsException();
+        }
+
+        if (!user.isEmailVerified()) {
+            throw new EmailNotVerifiedException();
         }
 
         List<HouseholdMember> memberships = memberRepository.findAllByUser(user.id());

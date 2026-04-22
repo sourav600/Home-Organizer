@@ -14,8 +14,8 @@ public class BcryptPasswordHasherAdapter implements PasswordHasher {
 
     @Override
     public HashedPassword hash(String rawPassword) {
-        if (rawPassword == null || rawPassword.length() < 8) {
-            throw new IllegalArgumentException("Password must be at least 8 characters");
+        if (rawPassword == null || rawPassword.length() < 6) {
+            throw new IllegalArgumentException("Password must be at least 6 characters");
         }
         return HashedPassword.of(encoder.encode(rawPassword));
     }

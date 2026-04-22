@@ -17,6 +17,7 @@ public final class UserPersistenceMapper {
                 e.getName(),
                 HashedPassword.of(e.getPasswordHash()),
                 e.isActive(),
+                e.isEmailVerified(),
                 e.getCreatedAt()
         );
     }
@@ -28,6 +29,7 @@ public final class UserPersistenceMapper {
                 u.name(),
                 u.passwordHash().value(),
                 u.isActive(),
+                u.isEmailVerified(),
                 u.createdAt()
         );
     }

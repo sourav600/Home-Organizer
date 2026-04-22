@@ -17,6 +17,8 @@ public final class User {
     private final HashedPassword passwordHash;
     @Getter
     private final boolean active;
+    @Getter
+    private final boolean emailVerified;
     private final Instant createdAt;
 
     public User(UserId id,
@@ -24,17 +26,19 @@ public final class User {
                 String name,
                 HashedPassword passwordHash,
                 boolean active,
+                boolean emailVerified,
                 Instant createdAt) {
         this.id = Objects.requireNonNull(id);
         this.email = Objects.requireNonNull(email);
         this.name = Objects.requireNonNull(name);
         this.passwordHash = Objects.requireNonNull(passwordHash);
         this.active = active;
+        this.emailVerified = emailVerified;
         this.createdAt = Objects.requireNonNull(createdAt);
     }
 
     public static User newUser(Email email, String name, HashedPassword passwordHash) {
-        return new User(UserId.newId(), email, name, passwordHash, true, Instant.now());
+        return new User(UserId.newId(), email, name, passwordHash, true, false, Instant.now());
     }
 
     public UserId id() { return id; }
@@ -44,6 +48,10 @@ public final class User {
     public Instant createdAt() { return createdAt; }
 
     public User deactivate() {
-        return new User(id, email, name, passwordHash, false, createdAt);
+        return new User(id, email, name, passwordHash, false, emailVerified, createdAt);
+    }
+
+    public User verifyEmail() {
+        return new User(id, email, name, passwordHash, active, true, createdAt);
     }
 }

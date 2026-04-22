@@ -2,10 +2,14 @@ package com.misourav.homeorganizer.adapter.in.web;
 
 import com.misourav.homeorganizer.adapter.in.web.dto.AuthResponse;
 import com.misourav.homeorganizer.adapter.in.web.dto.LoginRequest;
+import com.misourav.homeorganizer.adapter.in.web.dto.OtpVerificationRequest;
 import com.misourav.homeorganizer.adapter.in.web.dto.RegisterRequest;
+import com.misourav.homeorganizer.adapter.in.web.dto.ResendOtpRequest;
 import com.misourav.homeorganizer.application.port.in.LoginUseCase;
 import com.misourav.homeorganizer.application.port.in.RegisterUserUseCase;
+import com.misourav.homeorganizer.application.port.in.ResendOtpUseCase;
 import com.misourav.homeorganizer.application.port.in.SwitchHouseholdUseCase;
+import com.misourav.homeorganizer.application.port.in.VerifyEmailUseCase;
 import com.misourav.homeorganizer.config.security.AuthenticatedUser;
 import com.misourav.homeorganizer.domain.model.HouseholdId;
 import com.misourav.homeorganizer.domain.model.UserId;
@@ -31,13 +35,31 @@ public class AuthController {
     private final RegisterUserUseCase registerUserUseCase;
     private final LoginUseCase loginUseCase;
     private final SwitchHouseholdUseCase switchHouseholdUseCase;
+    private final VerifyEmailUseCase verifyEmailUseCase;
+    private final ResendOtpUseCase resendOtpUseCase;
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest req) {
         UserId id = registerUserUseCase.register(
                 new RegisterUserUseCase.RegisterUserCommand(
                         req.email(), req.name(), req.password(), req.householdName()));
-        return ResponseEntity.status(201).body(Map.of("userId", id.toString()));
+        return ResponseEntity.status(201).body(Map.of(
+                "userId", id.toString(),
+                "message", "Registration successful. An OTP has been sent to " + req.email()
+                        + " — verify your email to activate login."
+        ));
+    }
+
+    @PostMapping("/verify-email")
+    public ResponseEntity<Map<String, String>> verifyEmail(@Valid @RequestBody OtpVerificationRequest req) {
+        verifyEmailUseCase.verify(new VerifyEmailUseCase.VerifyEmailCommand(req.email(), req.otpCode()));
+        return ResponseEntity.ok(Map.of("message", "Email verified. You can now log in."));
+    }
+
+    @PostMapping("/resend-otp")
+    public ResponseEntity<Map<String, String>> resendOtp(@Valid @RequestBody ResendOtpRequest req) {
+        resendOtpUseCase.resend(req.email());
+        return ResponseEntity.ok(Map.of("message", "OTP resent to " + req.email()));
     }
 
     @PostMapping("/login")

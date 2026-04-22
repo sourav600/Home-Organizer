@@ -17,6 +17,10 @@ public class MeController {
 
     private final GetCurrentUserQuery getCurrentUserQuery;
 
+    @GetMapping("/hello")
+    public String hello(){
+        return "Hello world";
+    }
     @GetMapping
     public ResponseEntity<MeResponse> me(@AuthenticationPrincipal AuthenticatedUser principal) {
         if (principal.householdId() == null) {

@@ -15,32 +15,32 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users",
-        indexes = @Index(name = "idx_user_email", columnList = "email", unique = true))
+@Table(name = "otp_tokens",
+        indexes = {
+                @Index(name = "idx_otp_email", columnList = "email"),
+                @Index(name = "idx_otp_email_code", columnList = "email,code")
+        })
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserJpaEntity {
+public class OtpTokenJpaEntity {
 
     @Id
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "code", nullable = false, length = 10)
+    private String code;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+    @Column(name = "expires_at", nullable = false)
+    private Instant expiresAt;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean active;
-
-    @Column(name = "email_verified", nullable = false)
-    private boolean emailVerified;
+    @Column(name = "is_used", nullable = false)
+    private boolean used;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
